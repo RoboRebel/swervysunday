@@ -44,16 +44,21 @@ public class SwerveDrive extends Subsystem {
         setDefaultCommand(new DriveCommand());
     }
     private class SwerveModule {
+        private final int number;
         private final CANTalon rotTalon;
         private final CANTalon driveTalon;
         private final Encoder encoder;
         public SwerveModule(int rotID, int driveID, int[] encoderChannels){
+            number = driveID;
             rotTalon = new CANTalon(rotID);
             driveTalon = new CANTalon(driveID);
             encoder = new Encoder(encoderChannels[0],encoderChannels[1]);
+            encoder.reset();
+            encoder.setDistancePerPulse(1.0/7.0);
         }
         public void drive(double speed,double angle){
             driveTalon.set(speed);
+            System.out.println(number + ": distance is " + encoder.getDistance());
         }
     }
 }
