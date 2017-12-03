@@ -2,6 +2,8 @@ package org.usfirst.frc.team1329.robot.subsystems;
 
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.CounterBase;
+import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team1329.robot.commands.DriveCommand;
@@ -52,13 +54,13 @@ public class SwerveDrive extends Subsystem {
             number = driveID;
             rotTalon = new CANTalon(rotID);
             driveTalon = new CANTalon(driveID);
-            encoder = new Encoder(encoderChannels[0],encoderChannels[1]);
+            encoder = new Encoder(encoderChannels[0],encoderChannels[1],false, CounterBase.EncodingType.k4X);
             encoder.reset();
             encoder.setDistancePerPulse(1.0/7.0);
         }
         public void drive(double speed,double angle){
             driveTalon.set(speed);
-            System.out.println(number + ": distance is " + encoder.getDistance());
+            System.out.println(number + ": distance is " + encoder.getRaw());
         }
     }
 }
