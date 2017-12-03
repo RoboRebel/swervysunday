@@ -56,11 +56,11 @@ public class SwerveDrive extends Subsystem {
             driveTalon = new CANTalon(driveID);
             encoder = new Encoder(encoderChannels[0],encoderChannels[1],false, CounterBase.EncodingType.k4X);
             encoder.reset();
-            encoder.setDistancePerPulse(1.0/7.0);
+            encoder.setDistancePerPulse(1.0/400.0);
         }
         public void drive(double speed,double angle){
             driveTalon.set(speed);
-            System.out.println(number + ": distance is " + encoder.getRaw());
+            System.out.println(number + ": distance is " + encoder.getDistance());
         }
     }
 }
