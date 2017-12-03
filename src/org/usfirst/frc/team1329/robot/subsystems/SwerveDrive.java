@@ -11,6 +11,7 @@ import org.usfirst.frc.team1329.robot.commands.DriveCommand;
 import java.util.ArrayList;
 
 public class SwerveDrive extends Subsystem {
+	private static final double PULSES_PER_REV = 414.0;
     private SwerveModule topLeft, topRight, backLeft, backRight;
     private ArrayList<SwerveModule> swerveModules;
 
@@ -54,9 +55,9 @@ public class SwerveDrive extends Subsystem {
             number = driveID;
             rotTalon = new CANTalon(rotID);
             driveTalon = new CANTalon(driveID);
-            encoder = new Encoder(encoderChannels[0],encoderChannels[1],false, CounterBase.EncodingType.k4X);
+            encoder = new Encoder(encoderChannels[0],encoderChannels[1],true, CounterBase.EncodingType.k4X);
             encoder.reset();
-            encoder.setDistancePerPulse(1.0/400.0);
+            encoder.setDistancePerPulse(360.0/PULSES_PER_REV);
         }
         public void drive(double speed,double angle){
             driveTalon.set(speed);
