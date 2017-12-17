@@ -1,10 +1,7 @@
 package org.usfirst.frc.team1329.robot.subsystems;
 
 import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.CounterBase;
-import edu.wpi.first.wpilibj.DigitalSource;
-import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team1329.robot.commands.DriveCommand;
 
@@ -52,36 +49,54 @@ public class SwerveDrive extends Subsystem {
         private final CANTalon rotTalon;
         private final CANTalon driveTalon;
         private final Encoder encoder;
+        private final PIDController pidController;
         public SwerveModule(int rotID, int driveID, int[] encoderChannels){
             number = driveID;
             rotTalon = new CANTalon(rotID);
 //            rotTalon.setControlMode(CANTalon.TalonControlMode.Voltage.value);
             driveTalon = new CANTalon(driveID);
             driveTalon.setEncPosition(0);
-            encoder = new Encoder(encoderChannels[0],encoderChannels[1],true, CounterBase.EncodingType.k4X);
+            encoder = new Encoder(encoderChannels[0],encoderChannels[1],false, CounterBase.EncodingType.k4X);
             encoder.reset();
             encoder.setDistancePerPulse(360.0/PULSES_PER_REV);
+            pidController = new PIDController(0,0,0,new CorrectedEncoder(encoder),rotTalon);
+            pidController.setInputRange(0.0,360.0);
+            pidController.setOutputRange(-1.0,1.0);
+            pidController.setContinuous();
+            pidController.enable();
         }
         public void drive(double speed,double angle){
-//            driveTalon.set(speed);
-            double encoderDistance = -encoder.getDistance();
-            while(encoderDistance > 360.0 || encoderDistance < 0.0){
-                if(encoderDistance > 360.0){
-                    encoderDistance -= 360.0;
-                }else{
-                    encoderDistance += 360.0;
-                }
+            driveTalon.set(speed);
+            pidController.setSetpoint(angle);
+        }
+        private class CorrectedEncoder implements PIDSource{
+            private final Encoder encoder;
+            public CorrectedEncoder(Encoder encoder){
+                this.encoder = encoder;
             }
-            if(Math.abs(encoderDistance - angle) > TOLERANCE){
-                if(angle > encoderDistance){
-                    rotTalon.set(0.5);
-                }else{
-                    rotTalon.set(-0.5);
-                }
-            }else{
-                rotTalon.set(0.0);
+
+            @Override
+            public void setPIDSourceType(PIDSourceType pidSource) {
             }
-            System.out.println(number + ": distance is " + encoderDistance);
+
+            @Override
+            public PIDSourceType getPIDSourceType() {
+                return PIDSourceType.kDisplacement;
+            }
+
+            @Override
+            public double pidGet() {
+                double encoderDistance = encoder.getDistance();
+                System.out.println(encoderDistance);
+                while(encoderDistance > 360.0 || encoderDistance < 0.0){
+                    if(encoderDistance > 360.0){
+                        encoderDistance -= 360.0;
+                    }else{
+                        encoderDistance += 360.0;
+                    }
+                }
+                return encoderDistance;
+            }
         }
     }
 }
