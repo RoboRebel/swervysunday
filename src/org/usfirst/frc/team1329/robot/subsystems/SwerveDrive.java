@@ -56,6 +56,7 @@ public class SwerveDrive extends Subsystem {
             number = driveID;
             rotTalon = new CANTalon(rotID);
             driveTalon = new CANTalon(driveID);
+            driveTalon.setEncPosition(0);
             encoder = new Encoder(encoderChannels[0],encoderChannels[1],true, CounterBase.EncodingType.k4X);
             encoder.reset();
             encoder.setDistancePerPulse(360.0/PULSES_PER_REV);
