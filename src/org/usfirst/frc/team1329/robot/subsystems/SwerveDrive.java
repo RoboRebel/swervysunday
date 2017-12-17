@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class SwerveDrive extends Subsystem {
 	private static final double PULSES_PER_REV = 414.0;
-    private static final double TOLERANCE = 5.0;
+    private static final double TOLERANCE = 3.5;
     private SwerveModule topLeft, topRight, backLeft, backRight;
     private ArrayList<SwerveModule> swerveModules;
 
@@ -58,13 +58,13 @@ public class SwerveDrive extends Subsystem {
 //            rotTalon.setControlMode(CANTalon.TalonControlMode.Voltage.value);
             driveTalon = new CANTalon(driveID);
             driveTalon.setEncPosition(0);
-            encoder = new Encoder(encoderChannels[0],encoderChannels[1],true, CounterBase.EncodingType.k4X);
+            encoder = new Encoder(encoderChannels[0],encoderChannels[1],false, CounterBase.EncodingType.k4X);
             encoder.reset();
             encoder.setDistancePerPulse(360.0/PULSES_PER_REV);
         }
         public void drive(double speed,double angle){
 //            driveTalon.set(speed);
-            double encoderDistance = -encoder.getDistance();
+            double encoderDistance = encoder.getDistance();
             while(encoderDistance > 360.0 || encoderDistance < 0.0){
                 if(encoderDistance > 360.0){
                     encoderDistance -= 360.0;
