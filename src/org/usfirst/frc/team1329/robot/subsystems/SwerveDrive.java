@@ -60,14 +60,14 @@ public class SwerveDrive extends Subsystem {
             encoder.reset();
             encoder.setDistancePerPulse(360.0/PULSES_PER_REV);
 //            pidController = new PIDController(1.0,0,0,new CorrectedEncoder(encoder),rotTalon);
-            pidController = new PIDController(1.0,0,0,new CorrectedEncoder(encoder),new PIDTESTOUT());
+            pidController = new PIDController(.025,0,0.01,new CorrectedEncoder(encoder),rotTalon);
             pidController.setInputRange(0.0,360.0);
-//            pidController.setOutputRange(-1.0,1.0);
+            pidController.setOutputRange(-1.0,1.0);
             pidController.setContinuous();
             pidController.enable();
         }
         public void drive(double speed,double angle){
-//            driveTalon.set(speed);
+            driveTalon.set(speed);
             pidController.setSetpoint(angle);
         }
         private class CorrectedEncoder implements PIDSource{
@@ -92,7 +92,7 @@ public class SwerveDrive extends Subsystem {
                 while(encoderDistance > 360.0 || encoderDistance < 0.0){
                     if(encoderDistance > 360.0){
                         encoderDistance -= 360.0;
-                    }else{
+                    }else if(encoderDistance < 0){
                         encoderDistance += 360.0;
                     }
                 }
