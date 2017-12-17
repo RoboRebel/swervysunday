@@ -26,6 +26,7 @@ public class DriveCommand extends Command {
         values[0] = Math.abs((x*x)+(y*y));
         values[1] = Math.toDegrees(Math.atan2(y,x));
         values[1] += (values[1]>0.0) ? 0.0 : 360.0;
+//        System.out.println(values[1]);
         Robot.swerveDrive.drive(values[0],values[1]);
     }
 
