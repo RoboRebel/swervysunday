@@ -59,7 +59,7 @@ public class SwerveDrive extends Subsystem {
             encoder = new Encoder(encoderChannels[0],encoderChannels[1],false, CounterBase.EncodingType.k4X);
             encoder.reset();
             encoder.setDistancePerPulse(360.0/PULSES_PER_REV);
-            pidController = new PIDController(0,0,0,new CorrectedEncoder(encoder),rotTalon);
+            pidController = new PIDController(1.0,0,0,new CorrectedEncoder(encoder),rotTalon);
             pidController.setInputRange(0.0,360.0);
             pidController.setOutputRange(-1.0,1.0);
             pidController.setContinuous();
